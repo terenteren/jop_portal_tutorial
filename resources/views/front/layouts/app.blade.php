@@ -15,6 +15,7 @@
 	<!-- Fav Icon -->
 	<link rel="shortcut icon" type="image/x-icon" href="#" />
 </head>
+
 <body data-instant-intensity="mousedown">
 <header>
 	<nav class="navbar navbar-expand-lg navbar-light bg-white shadow py-3">
@@ -27,19 +28,19 @@
 				<ul class="navbar-nav ms-0 ms-sm-0 me-auto mb-2 mb-lg-0 ms-lg-4">
 					<li class="nav-item">
 						<a class="nav-link" aria-current="page" href="index.html">Home</a>
-					</li>	
+					</li>
 					<li class="nav-item">
 						<a class="nav-link" aria-current="page" href="jobs.html">Find Jobs</a>
-					</li>										
-				</ul>				
+					</li>
+				</ul>
 
                 @if (!Auth::check())
                     <a class="btn btn-outline-primary me-2" href="{{ route('account.login') }}" type="submit">Login</a>
                 @else
-                    <a class="btn btn-outline-primary me-2" href="{{ route('account.profile') }}" type="submit">Account</a>    
+                    <a class="btn btn-outline-primary me-2" href="{{ route('account.profile') }}" type="submit">Account</a>
                 @endif
 
-				
+
 				<a class="btn btn-primary" href="post-job.html" type="submit">Post a Job</a>
 			</div>
 		</div>
@@ -56,16 +57,17 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-        <form>
+        <form id="profilePicForm" name="profilePicForm" action="" method="post">
             <div class="mb-3">
                 <label for="exampleInputEmail1" class="form-label">Profile Image</label>
                 <input type="file" class="form-control" id="image"  name="image">
+                <p class="text-danger" id="image-error"></p>
             </div>
             <div class="d-flex justify-content-end">
                 <button type="submit" class="btn btn-primary mx-3">Update</button>
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
             </div>
-            
+
         </form>
       </div>
     </div>
@@ -76,7 +78,7 @@
     <div class="container">
         <p class="text-center text-white pt-3 fw-bold fs-6">© 2023 xyz company, all right reserved</p>
     </div>
-</footer> 
+</footer>
 
 <script src="{{ asset('assets/js/jquery-3.6.0.min.js') }}"></script>
 <script src="{{ asset('assets/js/bootstrap.bundle.5.1.3.min.js') }}"></script>
@@ -91,6 +93,32 @@
         headers: {
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
         }
+    });
+
+    $("#profilePicForm").submit(function(e) {
+        e.preventDefault();
+
+        var formData = new FormData(this);
+
+
+        $.ajax({
+            url: '{{ route("account.updateProfilePic") }}',
+            type: 'post',
+            data: formData,
+            dataType: 'json',
+            contentType: false,
+            processData: false,
+            success: function(response) {
+                if(response.status == false) {
+                    var errors = response.errors;
+                    if (errors.image) {
+                        $("#image-error").html(errors.image);
+                    }
+                } else {
+                    window.location.href = '{{  url()->current() }}';
+                }
+            }
+        });
     });
 </script>
 @yield('customJs')

@@ -24,7 +24,7 @@ Route::get('/', [HomeController::class, 'index'])->name('home');
 
 
 Route::group(['prefix' => 'account'], function () {
-    
+
     // Guest Route
     Route::group(['middleware' => 'guest'], function () {
         Route::get('/register', [AccountController::class, 'registration'])->name('account.registration');
@@ -38,6 +38,8 @@ Route::group(['prefix' => 'account'], function () {
         Route::get('/logout', [AccountController::class, 'logout'])->name('account.logout');
         Route::put('/update-profile', [AccountController::class, 'updateProfile'])->name('account.updateProfile');
         Route::get('/profile', [AccountController::class, 'profile'])->name('account.profile');
+        Route::post('/update-profile-pic', [AccountController::class, 'updateProfilePic'])->name('account.updateProfilePic');
+
     });
 
 });
